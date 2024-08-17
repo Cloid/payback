@@ -1,5 +1,6 @@
 import { Button, Text, View, FlatList, StyleSheet, Dimensions } from "react-native";
-
+import CircleAddButton from '../components/CircleAddButton'
+import DropDownMenu from "@/components/DropDownMenu";
 export default function Index() {
 
   const styles = StyleSheet.create({
@@ -24,6 +25,19 @@ export default function Index() {
       fontSize: 14,
       color: '#888',
     },
+    circleAddButton: {
+      position: "absolute",
+      bottom: 30,  // Adjust the distance from the bottom of the screen
+      right: 30,   // Adjust the distance from the right side of the screen
+      borderWidth:1,
+      borderColor:'rgba(0,0,0,0.2)',
+      alignItems:'center',
+      justifyContent:'center',
+      width:100,
+      height:100,
+      backgroundColor:'#fff',
+      borderRadius:50,
+    },
   });
 
   const { width, height } = Dimensions.get('window');
@@ -33,6 +47,10 @@ export default function Index() {
     { key: 'Dan', location: 'New York', time: '2024-08-08 1:00 PM' },
     { key: 'Dominic', location: 'San Francisco', time: '2024-08-08 2:00 PM' },
   ];
+
+  const handleDropdownTriggerPress = (key: string) => {
+    console.log('dd trigger pressed ', key);
+  };
 
   return (
     <View
@@ -50,11 +68,17 @@ export default function Index() {
         )}
         keyExtractor={(item) => item.key}
       />
-      <Button
-  title="Learn More"
-  color="#841584"
-  accessibilityLabel="Learn more about this purple button"
-/>
+      <View
+      style={styles.circleAddButton}>
+      <DropDownMenu
+        onSelect={handleDropdownTriggerPress}
+        items={[
+          { key: '1', title: 'Camera', icon: 'home-outline' },
+          { key: '2', title: 'Photo', icon: 'settings-outline' },
+          { key: '3', title: 'Manual', icon: 'settings-outline' },
+        ]}
+      />
+      </View>
     </View>
   );
 }
