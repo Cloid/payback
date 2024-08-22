@@ -27,7 +27,8 @@ self.define_singleton_method(use_autolinking_method_symbol) do |*args|
     origin_autolinking_method.call()
   end
 end
-
+# TODO:
+# change back to 13.4
 platform :ios, podfile_properties['ios.deploymentTarget'] || '13.4'
 install! 'cocoapods',
   :deterministic_uuids => false
@@ -40,7 +41,11 @@ target 'payback' do
 
   use_frameworks! :linkage => podfile_properties['ios.useFrameworks'].to_sym if podfile_properties['ios.useFrameworks']
   use_frameworks! :linkage => ENV['USE_FRAMEWORKS'].to_sym if ENV['USE_FRAMEWORKS']
-
+  use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
+  
+  pod 'GoogleMLKit/TextRecognition'
+  
   use_react_native!(
     :path => config[:reactNativePath],
     :hermes_enabled => podfile_properties['expo.jsEngine'] == nil || podfile_properties['expo.jsEngine'] == 'hermes',
@@ -56,6 +61,9 @@ target 'payback' do
       :mac_catalyst_enabled => false,
       :ccache_enabled => podfile_properties['apple.ccacheEnabled'] == 'true',
     )
+    installer.pods_project.build_configurations.each do |config|
+      config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+    end
 
     # This is necessary for Xcode 14, because it signs resource bundles by default
     # when building for devices.
